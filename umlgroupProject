@@ -1,0 +1,82 @@
+import matplotlib.pyplot as plt
+import csv
+import json
+
+#Class For Getting Data From Files
+class GroupProject:
+    def __init__(self):
+        #Variable Initializations
+        self.pop = [] 
+    
+    def readCSV(self):
+        #Read CSV File
+        with open('C:\\Users\\Johnmark\\Desktop\\SCHOOL\\CURRENT\\IST_261\\csvData_Deo1.csv', 'r') as csvStart:
+            reader = csv.reader(csvStart)
+            self.pop = list(reader)
+        return(self.pop)
+        
+    def readJSON(self):
+        templist = []
+        with open('C:\\Users\\Johnmark\\Desktop\\SCHOOL\\CURRENT\\IST_261\\csvData_Deo1.json') as jsonStart:
+            temp = json.load(jsonStart)
+            templist = [row.values() for row in temp]
+            self.pop = templist
+        return(self.pop)
+    
+    def readTXT(self):
+        with open('C:\\Users\\Johnmark\\Desktop\\SCHOOL\\CURRENT\\IST_261\\csvData_Deo1.txt', 'r') as txtStart:
+            self.pop = [line.split(',') for line in txtStart.readlines()]
+        return(self.pop)
+
+def main():
+    #Initialize Class And File Type
+    gp = GroupProject()
+    typefile = input('Choose File Type. csv or txt(csv is default): ')
+    typefile.lower()
+    if typefile == 'txt':
+        info = gp.readTXT()
+    #elif typefile == 'json':
+    #   info = gp.readJSON() 
+    else:
+        info = gp.readCSV()   
+        
+    check = 0
+    while check == 0:
+        #How to access data for each state
+        c_state = input('What state would you like to see? ')
+        c_state = c_state.lower()
+        c_state = c_state.title()
+        
+        for i in range(len(info)):
+            if c_state == info[i][1]:
+                x = []
+                y = []
+                tick_label = []
+                #Graph Info
+                for j in range(len(info[0])-2):
+                    x.append(int(info[0][j+2]))
+                    y.append(info[i][j+2])
+                    tick_label.append(info[0][j+2])
+                plt.xlim(1910,2020)
+                plt.plot(x, y)
+                plt.bar(x, y, width = 1.5, color = ['blue', 'maroon', 'brown'])
+                
+                #Titles For the Axis'
+                plt.xlabel('Year')
+                plt.ylabel('Population')
+                plt.title(c_state)
+                plt.show()
+                
+                check += 1
+        if check == 0:
+            print('That is not a valid state. Try again.')
+            
+        #Prompt To Try Again
+        if check != 0:
+            again = input('Would you like to try another state?(y/n) ')
+            again = again.lower()
+            if again == 'y':
+                check = 0
+            else:
+                print('Thank you for using our population program')
+main()
